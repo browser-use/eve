@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-// End-to-end integration check for @browser-use/eve.
+// End-to-end integration check for browser-use-eve.
 //
 // Opt-in (not part of `npm test`): it costs cloud-browser credits and needs a
 // running eve app that uses this package, plus BROWSER_USE_API_KEY + model creds.
 //
 // Usage:
-//   1. In an eve app with @browser-use/eve wired in:  npm run dev -- --no-ui --port 3737
+//   1. In an eve app with browser-use-eve wired in:  npm run dev -- --no-ui --port 3737
 //   2. node scripts/integration.mjs [baseUrl]
 //
 // Asserts: the agent opened a cloud browser (a liveUrl appeared), read the

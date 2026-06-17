@@ -6,13 +6,13 @@ import { dirname, join } from "node:path";
 /** The harness-mode thin files. Each is a one-liner; logic lives in the package. */
 export const HARNESS_FILES: Record<string, string> = {
   "agent/sandbox/sandbox.ts":
-    'import { browserUseSandbox } from "@browser-use/eve/sandbox";\nexport default browserUseSandbox();\n',
+    'import { browserUseSandbox } from "browser-use-eve/sandbox";\nexport default browserUseSandbox();\n',
   "agent/skills/browser-use.ts":
-    'export { default } from "@browser-use/eve/skill";\n',
+    'export { default } from "browser-use-eve/skill";\n',
   "agent/tools/open_cloud_browser.ts":
-    'export { default } from "@browser-use/eve/tools/open-cloud-browser";\n',
+    'export { default } from "browser-use-eve/tools/open-cloud-browser";\n',
   "agent/tools/stop_cloud_browser.ts":
-    'export { default } from "@browser-use/eve/tools/stop-cloud-browser";\n',
+    'export { default } from "browser-use-eve/tools/stop-cloud-browser";\n',
 };
 
 export class ScaffoldError extends Error {
@@ -61,7 +61,7 @@ export function scaffold(root: string, opts: { force?: boolean } = {}): Scaffold
     /* ignore malformed package.json — just means we nudge to install */
   }
   const deps = { ...pkg.dependencies, ...pkg.devDependencies };
-  const missingDep = !deps["@browser-use/eve"];
+  const missingDep = !deps["browser-use-eve"];
 
   const envPath = join(root, ".env.local");
   const missingKey = !(

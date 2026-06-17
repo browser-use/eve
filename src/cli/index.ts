@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// browser-use-eve — scaffolds the thin files that wire @browser-use/eve into an
+// browser-use-eve — scaffolds the thin files that wire browser-use-eve into an
 // eve app. Mirrors the ergonomics of `eve channels add <kind>`.
 import { resolve } from "node:path";
 import { scaffold, ScaffoldError } from "./scaffold.js";
@@ -18,12 +18,12 @@ function runAdd(args: string[]): void {
     process.exit(1);
   }
 
-  console.log("\n  @browser-use/eve — cloud browser for your eve agent\n");
+  console.log("\n  browser-use-eve — cloud browser for your eve agent\n");
   for (const f of result.written) console.log(`  + ${f}`);
   for (const f of result.skipped) console.log(`  · ${f}  (exists — re-run with --force to overwrite)`);
 
   const next: string[] = [];
-  if (result.missingDep) next.push("npm i @browser-use/eve");
+  if (result.missingDep) next.push("npm i browser-use-eve");
   if (result.missingKey) next.push("add BROWSER_USE_API_KEY=bu_... to .env.local");
   if (next.length) {
     console.log("\n  next steps:");

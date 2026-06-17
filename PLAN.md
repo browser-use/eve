@@ -1,11 +1,11 @@
-# PLAN — `@browser-use/eve`
+# PLAN — `browser-use-eve`
 
 A one-install package that lets any Vercel **eve** agent browse the web with a
 Browser Use **cloud browser**. Goal: turn the multi-hour manual integration
 (which we did by hand in `~/Projects/lab/eve-lab`) into:
 
 ```bash
-npm i @browser-use/eve && npx browser-use-eve add
+npm i browser-use-eve && npx browser-use-eve add
 # set BROWSER_USE_API_KEY → agent can browse
 ```
 
@@ -22,19 +22,19 @@ Subpath exports, each a small factory:
 
 | Subpath | Factory | Backed by (lab) |
 |---|---|---|
-| `@browser-use/eve/sandbox` | `browserUseSandbox(opts)` → `defineSandbox` | `agent/sandbox/sandbox.ts` |
-| `@browser-use/eve/skill` | `browserUseSkill(opts)` → `defineSkill` | `agent/skills/browser-harness.md` |
-| `@browser-use/eve/tools` | `openCloudBrowser` / `stopCloudBrowser` → `defineTool` | (new, hardened mode) |
-| `@browser-use/eve/connection` | `browserUseConnection(opts)` → `defineMcpClientConnection` | (alt "mcp" mode) |
+| `browser-use-eve/sandbox` | `browserUseSandbox(opts)` → `defineSandbox` | `agent/sandbox/sandbox.ts` |
+| `browser-use-eve/skill` | `browserUseSkill(opts)` → `defineSkill` | `agent/skills/browser-harness.md` |
+| `browser-use-eve/tools` | `openCloudBrowser` / `stopCloudBrowser` → `defineTool` | (new, hardened mode) |
+| `browser-use-eve/connection` | `browserUseConnection(opts)` → `defineMcpClientConnection` | (alt "mcp" mode) |
 | `bin: browser-use-eve` | `add` scaffolder + catalog | mirrors `eve channels add` |
 
 Thin files the user ends up with (they own these; logic stays in the package):
 ```ts
 // agent/sandbox/sandbox.ts
-import { browserUseSandbox } from "@browser-use/eve/sandbox";
+import { browserUseSandbox } from "browser-use-eve/sandbox";
 export default browserUseSandbox();
 // agent/skills/browser-use.ts
-export { default } from "@browser-use/eve/skill";
+export { default } from "browser-use-eve/skill";
 ```
 
 ## Config surface (default zero-config; opt into depth)
@@ -55,7 +55,7 @@ stopOnSessionEnd, approval, networkPolicy, liveUrl })` — maps to real
 - Optional: an `eve eval` suite as the CI gate.
 
 ## Publish & distribute
-1. `npm publish --access public` under the **@browser-use** scope (org-owned), with provenance.
+1. `npm publish` — unscoped `browser-use-eve` (no org/scope needed), optionally `--provenance`.
 2. README: 3-line quickstart + the config table.
 3. Get listed in **eve's Integrations gallery** (coordinate w/ Vercel) — same slot as Linear/Notion.
 4. Cross-link from Browser Use docs; `npx browser-use-eve@latest add` works without pre-install.
@@ -69,7 +69,7 @@ stopOnSessionEnd, approval, networkPolicy, liveUrl })` — maps to real
 5. **Ship** — npm publish + docs + gallery PR.
 
 ## Locked decisions (signed off)
-1. **Name/scope:** `@browser-use/eve`.
+1. **Name/scope:** `browser-use-eve`.
 2. **Driver:** **TS-native** — `browser-harness-js` (Bun CLI) in the sandbox + `browser-use-sdk` (Cloud SDK) in the app runtime. No `uv`/Python.
 3. **Default mode:** **hardened** (key out of sandbox); autospawn-style opt-in later.
 4. **v1 scope:** harness-in-sandbox only; MCP mode fast-follow.
@@ -97,11 +97,11 @@ Because `browser-harness-js` exposes raw typed CDP (`session.Domain.method`), th
 
 ## Milestones (updated)
 1. **Skeleton** ✅ — package.json (exports map mirrors `@vercel/connect`), tsconfig, tsup, peerDeps `eve`+`zod`, dep `browser-use-sdk`.
-2. **Core** ✅ — `@browser-use/eve/sandbox` (install + PATH) and `@browser-use/eve/skill` (raw-CDP, async-IIFE output pattern).
+2. **Core** ✅ — `browser-use-eve/sandbox` (install + PATH) and `browser-use-eve/skill` (raw-CDP, async-IIFE output pattern).
 3. **Tools** ✅ — `open_cloud_browser` (provision via SDK → resolve wss → inject → connect, enables Page/Runtime) / `stop_cloud_browser` (teardown + billing).
 4. **Scaffolder** ✅ — `browser-use-eve add` (idempotent, `--force`, dep/key nudges).
 5. **Test** ✅ — validated against eve-lab via `eve dev --no-ui` + HTTP session: agent opened a cloud browser, read "Example Domain", stopped it. (Still TODO: commit an `examples/minimal-agent` + automate as CI/eval.)
-6. **Ship** — TODO: move to a `browser-use` org repo, publish under `@browser-use`, README, gallery PR.
+6. **Ship** — repo `browser-use/eve` (private) done; TODO: `npm publish` as `browser-use-eve`, README, gallery PR.
 
 ## Config passthrough (TODO, fast-follow)
 `proxyCountryCode` / `profileId` / `timeout` from `browserUseSandbox(opts)` → the

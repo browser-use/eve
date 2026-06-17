@@ -60,7 +60,7 @@ describe("scaffold", () => {
   });
 
   it("clears the nudges when dep + key are present", () => {
-    writePkg('{"dependencies":{"@browser-use/eve":"*"}}');
+    writePkg('{"dependencies":{"browser-use-eve":"*"}}');
     writeFileSync(join(dir, ".env.local"), "BROWSER_USE_API_KEY=bu_test\n");
     const r = scaffold(dir);
     expect(r.missingDep).toBe(false);

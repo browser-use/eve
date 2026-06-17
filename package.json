@@ -1,5 +1,5 @@
 {
-  "name": "@browser-use/eve",
+  "name": "browser-use-eve",
   "version": "0.0.1",
   "description": "Give a Vercel eve agent a Browser Use cloud browser, in one install.",
   "keywords": [

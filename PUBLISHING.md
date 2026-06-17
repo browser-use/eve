@@ -1,45 +1,42 @@
-# Publishing `@browser-use/eve`
+# Publishing `browser-use-eve`
 
-Local prep is done (git, license, metadata, build verified). The steps below are
-the **outward, gated actions** — run them when ready.
+The package is publish-ready: `files: ["dist"]`, `prepare` builds on publish,
+unscoped name (matches `browser-use-sdk`). The GitHub repo
+(`github.com/browser-use/eve`, private) already exists and is pushed.
 
-## 0. Confirm
-
-- [ ] Repo name under the org (this scaffold assumes `browser-use/eve` —
-      change `repository`/`homepage`/`bugs` in `package.json` if you pick another).
-- [ ] You have publish rights to the **@browser-use** npm scope.
-
-## 1. Create the org repo and push
+## Internal (today) — git install, no npm
 
 ```bash
-# from this directory
-gh repo create browser-use/eve --public --source=. --remote=origin --push
+npm i github:browser-use/eve     # needs access to the private repo
+npx browser-use-eve add
 ```
 
-## 2. Publish to npm
+## Public — publish to npm (outward, gated)
 
 ```bash
-npm login                       # if not already
-npm publish                     # publishConfig.access is already "public"
-                                # prepublishOnly runs the build automatically
+# 1. log in (opens a browser; needs your 2FA)
+npm login
+
+# 2. publish — unscoped, so no org/scope needed; prepare builds dist
+cd ~/Projects/lab/browser-use-eve
+npm publish
+
+# 3. verify
+npm view browser-use-eve
 ```
 
-For provenance (recommended, from CI or a clean checkout):
+Then `npm i browser-use-eve && npx browser-use-eve add` works for anyone.
 
-```bash
-npm publish --provenance
-```
+## After publish
 
-## 3. After publish
-
-- [ ] Verify install in a fresh eve app: `npm i @browser-use/eve && npx browser-use-eve add`
+- [ ] Smoke test in a fresh eve app: `npm i browser-use-eve && npx browser-use-eve add`
 - [ ] Tag the release: `git tag v0.0.1 && git push --tags`
-- [ ] Open the eve Integrations gallery PR (coordinate with Vercel).
-- [ ] Cross-link from Browser Use docs.
+- [ ] Consider making the GitHub repo public (so a deploy-button template can build)
+- [ ] Open the eve Integrations gallery PR / cross-link from Browser Use docs
 
 ## Notes
 
-- The published tarball contains only `dist/` (+ `README`, `LICENSE`, `package.json`)
-  per the `files` field — verify with `npm pack --dry-run`.
-- `peerDependencies` (`eve`, `zod`) are provided by the consuming eve app.
-- `browser-use-sdk` is a real dependency and installs with the package.
+- The tarball contains only `dist/` (+ README, LICENSE, package.json) — verify with `npm pack --dry-run`.
+- Unscoped packages are public by default; `publishConfig.access` is inert here.
+- `peerDependencies` (`eve`, `zod`) come from the consuming eve app; `browser-use-sdk` installs with the package.
+- Publishing is public + effectively permanent (unpublish is restricted to 72h).
