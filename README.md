@@ -5,12 +5,15 @@ Give a [Vercel **eve**](https://eve.dev) agent a [Browser Use](https://browser-u
 screenshot the live web — and you can watch it via a liveUrl.
 
 ```bash
-npm i @browser-use/eve
+npm i github:browser-use/eve      # internal install (private repo)
 npx browser-use-eve add
 # add BROWSER_USE_API_KEY=bu_... to .env.local
 ```
 
 That's it — ask your agent to "open example.com and tell me the title."
+
+> Internal/private today. When published publicly the install becomes
+> `npm i @browser-use/eve`. See `PUBLISHING.md`.
 
 ## What `add` scaffolds
 

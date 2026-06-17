@@ -16,11 +16,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/browser-use/browser-use-eve.git"
+    "url": "git+https://github.com/browser-use/eve.git"
   },
-  "homepage": "https://github.com/browser-use/browser-use-eve#readme",
+  "homepage": "https://github.com/browser-use/eve#readme",
   "bugs": {
-    "url": "https://github.com/browser-use/browser-use-eve/issues"
+    "url": "https://github.com/browser-use/eve/issues"
   },
   "type": "module",
   "engines": {
@@ -54,7 +54,7 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run build"
+    "prepare": "npm run build"
   },
   "dependencies": {
     "browser-use-sdk": "^3.8.4"

@@ -5,7 +5,7 @@ the **outward, gated actions** — run them when ready.
 
 ## 0. Confirm
 
-- [ ] Repo name under the org (this scaffold assumes `browser-use/browser-use-eve` —
+- [ ] Repo name under the org (this scaffold assumes `browser-use/eve` —
       change `repository`/`homepage`/`bugs` in `package.json` if you pick another).
 - [ ] You have publish rights to the **@browser-use** npm scope.
 
@@ -13,7 +13,7 @@ the **outward, gated actions** — run them when ready.
 
 ```bash
 # from this directory
-gh repo create browser-use/browser-use-eve --public --source=. --remote=origin --push
+gh repo create browser-use/eve --public --source=. --remote=origin --push
 ```
 
 ## 2. Publish to npm
