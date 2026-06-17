@@ -1,0 +1,73 @@
+{
+  "name": "@browser-use/eve",
+  "version": "0.0.1",
+  "description": "Give a Vercel eve agent a Browser Use cloud browser, in one install.",
+  "keywords": [
+    "browser-use",
+    "eve",
+    "vercel",
+    "agent",
+    "cloud-browser",
+    "browser-automation",
+    "cdp",
+    "ai-agent"
+  ],
+  "author": "Browser Use",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/browser-use/browser-use-eve.git"
+  },
+  "homepage": "https://github.com/browser-use/browser-use-eve#readme",
+  "bugs": {
+    "url": "https://github.com/browser-use/browser-use-eve/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist"],
+  "bin": {
+    "browser-use-eve": "./dist/cli/index.js"
+  },
+  "exports": {
+    "./sandbox": {
+      "types": "./dist/sandbox/index.d.ts",
+      "default": "./dist/sandbox/index.js"
+    },
+    "./skill": {
+      "types": "./dist/skill/index.d.ts",
+      "default": "./dist/skill/index.js"
+    },
+    "./tools/open-cloud-browser": {
+      "types": "./dist/tools/open-cloud-browser.d.ts",
+      "default": "./dist/tools/open-cloud-browser.js"
+    },
+    "./tools/stop-cloud-browser": {
+      "types": "./dist/tools/stop-cloud-browser.d.ts",
+      "default": "./dist/tools/stop-cloud-browser.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "browser-use-sdk": "^3.8.4"
+  },
+  "peerDependencies": {
+    "eve": ">=0.11.0 <1",
+    "zod": "^4"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "eve": "^0.11.3",
+    "tsup": "^8",
+    "typescript": "^5",
+    "zod": "^4"
+  }
+}
