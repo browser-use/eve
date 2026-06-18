@@ -1,5 +1,42 @@
 import { defineSkill } from "eve/skills";
 
+/** One example CDP snippet shown in the skill. Each MUST be a single expression
+ * that prints non-empty output through the browser-harness-js REPL — enforced by
+ * test/skill-snippets.test.ts so a broken example can never ship. */
+export interface SkillExample {
+  label: string;
+  code: string;
+}
+
+export const EXAMPLE_SNIPPETS: SkillExample[] = [
+  {
+    label: "Navigate and wait",
+    code: `session.Page.navigate({ url: "https://news.ycombinator.com" }).then(() => session.waitFor("Page.loadEventFired")).then(() => JSON.stringify("ok"))`,
+  },
+  {
+    label: "Read the title",
+    code: `JSON.stringify((await session.Runtime.evaluate({ expression: "document.title", returnByValue: true })).result.value)`,
+  },
+  {
+    label: "Extract a list (page logic lives in the expression string)",
+    code: `JSON.stringify((await session.Runtime.evaluate({ expression: "Array.from(document.querySelectorAll('.titleline a')).slice(0,3).map(a => a.textContent)", returnByValue: true })).result.value)`,
+  },
+  {
+    label: "List tabs",
+    code: `listPageTargets().then(t => JSON.stringify(t))`,
+  },
+  {
+    label: "Click (x, y)",
+    code: `session.Input.dispatchMouseEvent({ type: "mousePressed", x, y, button: "left", clickCount: 1 }).then(() => session.Input.dispatchMouseEvent({ type: "mouseReleased", x, y, button: "left", clickCount: 1 })).then(() => JSON.stringify("clicked"))`,
+  },
+  {
+    label: "Screenshot (returns base64 PNG length)",
+    code: `session.Page.captureScreenshot().then(s => JSON.stringify(s.data.length))`,
+  },
+];
+
+const EXAMPLES_MD = EXAMPLE_SNIPPETS.map((e) => `   - ${e.label}:\n     \`${e.code}\``).join("\n");
+
 const MARKDOWN = `You browse the live web with a Browser Use **cloud browser**, driven by the
 \`browser-harness-js\` CLI. This is raw, typed Chrome DevTools Protocol — every
 Chrome capability is \`session.<Domain>.<method>(params)\`. There are no
@@ -36,18 +73,7 @@ Chrome capability is \`session.<Domain>.<method>(params)\`. There are no
 
    ### Examples (each is one bash command)
 
-   - Navigate and wait:
-     \`session.Page.navigate({ url: "https://news.ycombinator.com" }).then(() => session.waitFor("Page.loadEventFired")).then(() => JSON.stringify("ok"))\`
-   - Read the title:
-     \`JSON.stringify((await session.Runtime.evaluate({ expression: "document.title", returnByValue: true })).result.value)\`
-   - Extract a list (page logic lives in the expression string):
-     \`JSON.stringify((await session.Runtime.evaluate({ expression: "Array.from(document.querySelectorAll('.titleline a')).slice(0,3).map(a => a.textContent)", returnByValue: true })).result.value)\`
-   - List tabs:
-     \`listPageTargets().then(t => JSON.stringify(t))\`
-   - Click (x, y):
-     \`session.Input.dispatchMouseEvent({ type: "mousePressed", x, y, button: "left", clickCount: 1 }).then(() => session.Input.dispatchMouseEvent({ type: "mouseReleased", x, y, button: "left", clickCount: 1 })).then(() => JSON.stringify("clicked"))\`
-   - Screenshot (returns base64 PNG length):
-     \`session.Page.captureScreenshot().then(s => JSON.stringify(s.data.length))\`
+${EXAMPLES_MD}
 
 3. **Close it.** Call the \`stop_cloud_browser\` tool when the task is done, to end
    the cloud browser's billing.
