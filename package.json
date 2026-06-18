@@ -1,6 +1,6 @@
 {
   "name": "@browser_use/eve",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Browser Use cloud browser for Vercel eve agents",
   "keywords": [
     "browser-use",

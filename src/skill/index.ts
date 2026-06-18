@@ -16,28 +16,39 @@ Chrome capability is \`session.<Domain>.<method>(params)\`. There are no
    domains enabled):
 
    \`\`\`bash
-   source /workspace/.bu-env && browser-harness-js '<async JS using session.*>'
+   source /workspace/.bu-env && browser-harness-js '<snippet>'
    \`\`\`
 
-   **Output rule (important): the CLI prints the resolved value of a SINGLE
-   expression.** \`console.log\` and multi-statement \`await a; await b; "x"\` print
-   nothing. Wrap your steps in one async IIFE that \`return\`s the value you want:
+   ### Output — follow this exactly
 
-   \`\`\`bash
-   source /workspace/.bu-env && browser-harness-js '(async () => { <steps>; return <value>; })()'
+   The CLI prints **only the value your snippet \`return\`s**, and prints **nothing**
+   for \`undefined\`, \`""\`, \`[]\`, or \`{}\`. So wrap **every** snippet in an async IIFE
+   that returns a **JSON string**:
+
+   \`\`\`js
+   (async () => { /* steps */ ; return JSON.stringify(value); })()
    \`\`\`
 
-   Examples:
-   - Navigate + read title:
-     \`(async () => { await session.Page.navigate({ url: "https://example.com" }); await session.waitFor("Page.loadEventFired"); return (await session.Runtime.evaluate({ expression: "document.title", returnByValue: true })).result.value; })()\`
+   - Always \`return\` — multi-statement code with no \`return\` evaluates to
+     \`undefined\` and prints nothing.
+   - Always \`JSON.stringify(...)\` — so arrays, objects, numbers, and booleans print
+     instead of hitting the "empty" path.
+   - Do **not** use \`console.log\` — it prints nothing.
+
+   ### Examples (each is one bash command)
+
+   - Navigate, then read the title:
+     \`(async () => { await session.Page.navigate({ url: "https://example.com" }); await session.waitFor("Page.loadEventFired"); const r = await session.Runtime.evaluate({ expression: "document.title", returnByValue: true }); return JSON.stringify(r.result.value); })()\`
+   - Extract a list (e.g. Hacker News titles):
+     \`(async () => { const r = await session.Runtime.evaluate({ expression: "Array.from(document.querySelectorAll('.titleline a')).slice(0,5).map(a => a.textContent)", returnByValue: true }); return JSON.stringify(r.result.value); })()\`
    - Read body text:
-     \`(async () => (await session.Runtime.evaluate({ expression: "document.body.innerText", returnByValue: true })).result.value)()\`
+     \`(async () => { const r = await session.Runtime.evaluate({ expression: "document.body.innerText", returnByValue: true }); return JSON.stringify(r.result.value); })()\`
    - List tabs:
-     \`listPageTargets()\`
+     \`(async () => { return JSON.stringify(await listPageTargets()); })()\`
    - Click (x, y):
-     \`(async () => { for (const type of ["mousePressed","mouseReleased"]) await session.Input.dispatchMouseEvent({ type, x, y, button: "left", clickCount: 1 }); return "clicked"; })()\`
-   - Screenshot (base64 PNG length):
-     \`(async () => (await session.Page.captureScreenshot()).data.length)()\`
+     \`(async () => { for (const type of ["mousePressed","mouseReleased"]) await session.Input.dispatchMouseEvent({ type, x, y, button: "left", clickCount: 1 }); return JSON.stringify("clicked"); })()\`
+   - Screenshot (returns base64 PNG length):
+     \`(async () => { const s = await session.Page.captureScreenshot(); return JSON.stringify(s.data.length); })()\`
 
 3. **Close it.** Call the \`stop_cloud_browser\` tool when the task is done, to end
    the cloud browser's billing.
