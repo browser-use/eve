@@ -1,0 +1,19 @@
+package.json
+  s_5e406bea916397::t_5b306a23b69af7 70-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "dfdd969e94706da0fd73430602d769f37ac01e94",
+  "prompts": {},
+  "sessions": {
+    "s_5e406bea916397": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a5d28048-0700-40bf-b9b9-a797dd9e701b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Saurav Panda <sgp65@cornell.edu>"
+    }
+  }
+}
