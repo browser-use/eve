@@ -1,7 +1,7 @@
 // App-runtime helpers for the Browser Use cloud browser. These run in eve's app
 // runtime (full process.env), NOT in the sandbox, so BROWSER_USE_API_KEY never
 // leaves the host. Backed by the official `browser-use-sdk`.
-import { BrowserUse } from "browser-use-sdk";
+import { BrowserUse, BrowserUseError } from "browser-use-sdk";
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
@@ -76,6 +76,7 @@ export async function stopCloudBrowser(id: string): Promise<void> {
     await client().browsers.stop(id);
   } catch (err) {
     // A browser already stopped/expired should not fail teardown.
+    if (!(err instanceof BrowserUseError && err.statusCode === 404)) throw err;
     if (process.env.BROWSER_USE_EVE_DEBUG) console.error("stopCloudBrowser", err);
   }
 }
