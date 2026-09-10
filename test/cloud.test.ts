@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { BrowserUseError } from "browser-use-sdk";
 
 // Mock the Cloud SDK: a BrowserUse instance exposing a `browsers` resource.
 // vi.hoisted so the mocks exist when the hoisted vi.mock factory runs.
@@ -7,7 +8,8 @@ const { create, get, stop } = vi.hoisted(() => ({
   get: vi.fn(),
   stop: vi.fn(),
 }));
-vi.mock("browser-use-sdk", () => ({
+vi.mock("browser-use-sdk", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("browser-use-sdk")>()),
   // A real class so `new BrowserUse({ apiKey })` yields an instance whose
   // `browsers` resource is our spies (vi.fn-as-constructor drops the returned obj).
   BrowserUse: class {
@@ -92,13 +94,26 @@ describe("stopCloudBrowser", () => {
     expect(stop).toHaveBeenCalledWith("b1");
   });
 
-  it("swallows errors so teardown is idempotent", async () => {
-    stop.mockRejectedValue(new Error("already stopped"));
+  it("swallows the SDK's not-found error so teardown is idempotent", async () => {
+    stop.mockRejectedValue(new BrowserUseError(404, "Session not found"));
     await expect(stopCloudBrowser("b1")).resolves.toBeUndefined();
   });
 
-  it("does not throw when the API key is missing", async () => {
+  it.each([401, 403, 422, 429, 500, 503])("propagates HTTP %i", async (status) => {
+    const error = new BrowserUseError(status, "stop failed");
+    stop.mockRejectedValue(error);
+    await expect(stopCloudBrowser("b1")).rejects.toBe(error);
+  });
+
+  it("propagates transport errors even if they look like a not-found error", async () => {
+    const error = Object.assign(new Error("transport failed"), { statusCode: 404 });
+    stop.mockRejectedValue(error);
+    await expect(stopCloudBrowser("b1")).rejects.toBe(error);
+  });
+
+  it("throws before calling the SDK when the API key is missing", async () => {
     delete process.env.BROWSER_USE_API_KEY;
-    await expect(stopCloudBrowser("b1")).resolves.toBeUndefined();
+    await expect(stopCloudBrowser("b1")).rejects.toThrow("BROWSER_USE_API_KEY is not set");
+    expect(stop).not.toHaveBeenCalled();
   });
 });
